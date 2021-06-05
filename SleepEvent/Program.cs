@@ -9,6 +9,8 @@ namespace SleepEvent
     {
         private int seconds;
         public TimerCount timerCount;   //проблема, поле приватное
+        public delegate void TimerNotify(string t);
+        public event TimerNotify Notify;
         public Timer(int s)
         {
             seconds = s;
@@ -21,18 +23,21 @@ namespace SleepEvent
             {
                 timerCount(seconds--);
                 Thread.Sleep(1000);
+                if (seconds == 0)
+                {
+                    Notify.Invoke("It's time!");
+                }
             }
+        }
 
-            ShowMessage();
-        }
-        public void ShowMessage()
-        {
-            Console.WriteLine("It's time!");
-        }
 
     }
     class Program
     {
+        private static void ShowMessage(string txt)
+        {
+            Console.WriteLine(txt);
+        }
         private static Timer InputSeconds()
         {
             Console.WriteLine("Enter seconds for counting:");
@@ -42,6 +47,7 @@ namespace SleepEvent
         static void Main()
         {
             Timer timer = InputSeconds();
+            timer.Notify += ShowMessage;
             TimerCount timerCountMain = (n) =>
             {
                 Console.WriteLine(n);
