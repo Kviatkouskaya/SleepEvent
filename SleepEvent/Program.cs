@@ -4,7 +4,6 @@ using System.Threading;
 namespace SleepEvent
 {
     public delegate void TimerCount(int n);
-
     class Timer
     {
         private int seconds;
@@ -15,7 +14,6 @@ namespace SleepEvent
         {
             seconds = s;
         }
-
         public void CountBackward()
         {
             Console.WriteLine("Counting started...");
@@ -29,8 +27,6 @@ namespace SleepEvent
                 }
             }
         }
-
-
     }
     class Program
     {
@@ -63,7 +59,6 @@ namespace SleepEvent
             };
             timer.timerCount += timerCount10Mess;
             timer.CountBackward();
-
         }
     }
 }
