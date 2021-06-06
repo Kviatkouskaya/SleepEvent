@@ -7,12 +7,17 @@ namespace SleepEvent
     class Timer
     {
         private int seconds;
-        public TimerCount timerCount;   //проблема, поле приватное
+        private TimerCount timerCount;
         public delegate void TimerNotify(string t);
         public event TimerNotify Notify;
         public Timer(int s)
         {
             seconds = s;
+        }
+        public TimerCount TimerCount
+        {
+            get { return timerCount; }
+            set { timerCount = value; }
         }
         public void CountBackward()
         {
@@ -21,11 +26,8 @@ namespace SleepEvent
             {
                 timerCount(seconds--);
                 Thread.Sleep(1000);
-                if (seconds == 0)
-                {
-                    Notify.Invoke("It's time!");
-                }
             }
+            Notify.Invoke("It's time!");
         }
     }
     class Program
@@ -47,17 +49,8 @@ namespace SleepEvent
             TimerCount timerCountMain = (n) =>
             {
                 Console.WriteLine(n);
-
             };
-            timer.timerCount = timerCountMain;
-            TimerCount timerCount10Mess = (n) =>
-            {
-                if (n % 10 == 0)
-                {
-                    Console.WriteLine($"{n} seconds passed...");
-                }
-            };
-            timer.timerCount += timerCount10Mess;
+            timer.TimerCount = timerCountMain;
             timer.CountBackward();
         }
     }
