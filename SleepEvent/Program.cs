@@ -8,19 +8,14 @@ namespace SleepEvent
     {
         private int seconds;
         public event TimerCount TimerCount;
-        //public delegate void TimerNotify(string t);
+        public delegate void TimerNotify(string t);
 
-        //public event TimerNotify Notify;
+        public event TimerNotify Notify;
         public Timer(int s)
         {
             seconds = s;
         }
-        /*public TimerCount TimerCount
-        {
-            set { timerCount = value; }
-            get { return timerCount; }
-        }
-        */
+        
         public void CountBackward()
         {
             while (seconds > 0)
@@ -28,16 +23,16 @@ namespace SleepEvent
                 TimerCount(seconds--);
                 Thread.Sleep(1000);
             }
-            //Notify.Invoke("It's time!");
+            Notify.Invoke("It's time!");
         }
     }
     class Program
     {
-       /* private static void ShowMessage(string txt)
+        private static void ShowMessage(string txt)
         {
             Console.WriteLine(txt);
         }
-       */
+       
         private static Timer InputSeconds()
         {
             Console.WriteLine("Enter seconds for counting:");
@@ -48,7 +43,7 @@ namespace SleepEvent
         static void Main()
         {
             Timer timer = InputSeconds();
-            //timer.Notify += ShowMessage;
+            timer.Notify += ShowMessage;
             TimerCount timerCountMain = (n) =>
             {
                 Console.WriteLine(n);
