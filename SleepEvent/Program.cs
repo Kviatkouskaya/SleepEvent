@@ -12,11 +12,20 @@ namespace SleepEvent
         }
         public string MessageNotify { get => message; }
     }
+    class TimerCountEventArgs : EventArgs
+    {
+        private readonly int seconds;
+        public TimerCountEventArgs(int s)
+        {
+            seconds = s;
+        }
+        public int SecondsCount { get => seconds; }
+    }
     public delegate void TimerCount(int n);
     class Timer
     {
         private int seconds;
-        public event TimerCount TimerCount;
+        public event EventHandler<TimerCountEventArgs> Counter;
         public event EventHandler<MessageEventArgs> Message;
         public Timer(int s)
         {
@@ -27,11 +36,17 @@ namespace SleepEvent
             EventHandler<MessageEventArgs> handler = Volatile.Read(ref Message);
             handler?.Invoke(this, e);
         }
+        private void OnCounterSent(TimerCountEventArgs e)
+        {
+            EventHandler<TimerCountEventArgs> handler = Volatile.Read(ref Counter);
+            handler?.Invoke(this, e);
+        }
         public void CountBackward()
         {
             while (seconds > 0)
             {
-                TimerCount.Invoke(seconds--);
+                TimerCountEventArgs timerCountEvent = new(seconds--);
+                OnCounterSent(timerCountEvent);
                 Thread.Sleep(1000);
             }
             MessageEventArgs messageEvent = new("It's time!");
@@ -54,17 +69,13 @@ namespace SleepEvent
             {
                 Console.WriteLine(n);
             };
-            TimerCount Each10Sec = (n) =>
-            {
-                if (n % 10 == 0)
-                {
-                    Console.WriteLine(n + " passed...");
-                }
-            };
-            timer.TimerCount += timerCountMain;
-            timer.TimerCount += Each10Sec;
+            timer.Counter += Timer_Counter;
             Console.WriteLine("Counting started...");
             timer.CountBackward();
+        }
+        private static void Timer_Counter(object sender, TimerCountEventArgs e)
+        {
+            Console.WriteLine(e.SecondsCount);
         }
         private static void Timer_Message(object sender, MessageEventArgs e)
         {
