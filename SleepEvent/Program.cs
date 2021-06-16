@@ -5,21 +5,19 @@ namespace SleepEvent
 {
     class MessageEventArgs : EventArgs
     {
-        private readonly string message;
+        public string MessageNotify { get; private set; }
         public MessageEventArgs(string m)
         {
-            message = m;
+            MessageNotify = m;
         }
-        public string MessageNotify { get => message; }
     }
     class TimerCountEventArgs : EventArgs
     {
-        private readonly int seconds;
+        public int SecondsCount { get; private set; }
         public TimerCountEventArgs(int s)
         {
-            seconds = s;
+            SecondsCount = s;
         }
-        public int SecondsCount { get => seconds; }
     }
     public delegate void TimerCount(int n);
     class Timer
